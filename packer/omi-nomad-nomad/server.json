@@ -1,0 +1,34 @@
+{
+	"provisioners": [
+		{
+			"type": "file",
+			"source": "./server.hcl",
+			"destination": "/tmp/nomad.hcl"
+		},
+		{
+			"type": "shell",
+			"execute_command": "chmod +x {{.Path}}; {{.Vars}} sudo -E -S bash -x '{{.Path}}'",
+			"script": "./install_common.sh"
+		}
+	],
+	"builders": [
+		{
+			"force_deregister": true,
+			"omi_name": "{{user `omi_name`}}",
+			"region": "eu-west-2",
+			"ssh_interface": "public_ip",
+			"access_key": "{{user `ak`}}",
+			"secret_key": "{{user `sk`}}",
+			"ssh_username": "{{user `ssh_username`}}",
+			"type": "osc-bsu",
+			"vm_type": "tinav4.c2r4p1",
+			"source_omi": "ami-abe953fa"
+		}
+	],
+	"variables": {
+		"omi_name": "Nomad-Server-Packer",
+		"ak": "{{env `OSC_ACCESS_KEY`}}",
+		"ssh_username": "outscale",
+		"sk": "{{env `OSC_SECRET_KEY`}}"
+	}
+}

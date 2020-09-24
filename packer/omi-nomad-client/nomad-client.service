@@ -1,0 +1,10 @@
+[Unit]
+Description=Launch Nomad client
+After=cloud-init.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/nomad agent -config /tmp/client.hcl
+
+[Install]
+WantedBy=multi-user.target
