@@ -19,7 +19,7 @@ resource "outscale_vm" "nomad_server_1" {
   security_group_ids = [outscale_security_group.ssh.id,
   outscale_security_group.nomad_server.id]
   user_data = data.cloudinit_config.nomad_server.rendered
-  subnet_id = outscale_subnet.adm.subnet_id
+  subnet_id = outscale_subnet.bastion.subnet_id
   tags {
     key   = "name"
     value = "nomad-server-1"
@@ -50,6 +50,7 @@ resource "outscale_vm" "nomad-client" {
   vm_type      = var.vm_type
   user_data    = data.cloudinit_config.nomad_server.rendered
   subnet_id    = outscale_subnet.adm.subnet_id
+  security_group_ids = [outscale_security_group.ssh.id]
   tags {
     key   = "name"
     value = "nomad-client-${count.index + 1}"
@@ -63,7 +64,7 @@ resource "outscale_vm" "consul_server_1" {
   vm_type      = var.vm_type
   security_group_ids = [outscale_security_group.ssh.id,
   outscale_security_group.consul_server.id]
-  subnet_id = outscale_subnet.adm.subnet_id
+  subnet_id = outscale_subnet.bastion.subnet_id
   tags {
     key   = "name"
     value = "consul-server-1"
@@ -77,7 +78,7 @@ resource "outscale_vm" "consul_server" {
   vm_type      = var.vm_type
   security_group_ids = [outscale_security_group.ssh.id,
   outscale_security_group.consul_server.id]
-  subnet_id = outscale_subnet.adm.subnet_id
+  subnet_id = outscale_subnet.bastion.subnet_id
   user_data = data.cloudinit_config.nomad_server.rendered
   
   tags {

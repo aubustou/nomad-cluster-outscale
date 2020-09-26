@@ -14,3 +14,5 @@ resource "outscale_public_ip_link" "consul_server" {
   public_ip = outscale_public_ip.consul.public_ip
 }
 
+resource "outscale_public_ip" "nat" {
+}
