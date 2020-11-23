@@ -18,3 +18,10 @@ data "outscale_image" "consul-server" {
     values = ["Consul-Server-Packer"]
   }
 }
+
+data "outscale_image" "haproxy" {
+  filter {
+    name   = "image_names"
+    values = ["Consul-Haproxy-Packer"]
+  }
+}

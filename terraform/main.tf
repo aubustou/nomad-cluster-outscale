@@ -17,7 +17,8 @@ resource "outscale_vm" "nomad_server_1" {
   image_id     = data.outscale_image.nomad-server.id
   vm_type      = var.vm_type
   security_group_ids = [outscale_security_group.ssh.id,
-  outscale_security_group.nomad_server.id]
+    outscale_security_group.nomad_server.id,
+  outscale_security_group.default.id]
   user_data = data.cloudinit_config.nomad_server.rendered
   subnet_id = outscale_subnet.bastion.subnet_id
   tags {
@@ -28,11 +29,12 @@ resource "outscale_vm" "nomad_server_1" {
 }
 
 resource "outscale_vm" "nomad_server" {
-  count = 2
+  count        = 2
   keypair_name = outscale_keypair.nomad.keypair_name
   image_id     = data.outscale_image.nomad-server.id
   vm_type      = var.vm_type
   security_group_ids = [outscale_security_group.ssh.id,
+    outscale_security_group.default.id,
   outscale_security_group.nomad_server.id]
   user_data = data.cloudinit_config.nomad_server.rendered
   subnet_id = outscale_subnet.adm.subnet_id
@@ -44,13 +46,14 @@ resource "outscale_vm" "nomad_server" {
 }
 
 resource "outscale_vm" "nomad-client" {
-  count = 5
+  count        = 6
   keypair_name = outscale_keypair.nomad.keypair_name
   image_id     = data.outscale_image.nomad-client.id
-  vm_type      = var.vm_type
+  vm_type      = var.client_vm_type
   user_data    = data.cloudinit_config.nomad_server.rendered
   subnet_id    = outscale_subnet.adm.subnet_id
-  security_group_ids = [outscale_security_group.ssh.id]
+  security_group_ids = [outscale_security_group.ssh.id,
+  outscale_security_group.default.id]
   tags {
     key   = "name"
     value = "nomad-client-${count.index + 1}"
@@ -63,6 +66,7 @@ resource "outscale_vm" "consul_server_1" {
   image_id     = data.outscale_image.consul-server.id
   vm_type      = var.vm_type
   security_group_ids = [outscale_security_group.ssh.id,
+    outscale_security_group.default.id,
   outscale_security_group.consul_server.id]
   subnet_id = outscale_subnet.bastion.subnet_id
   tags {
@@ -72,25 +76,20 @@ resource "outscale_vm" "consul_server_1" {
 }
 
 resource "outscale_vm" "consul_server" {
-  count = 2
+  count        = 2
   keypair_name = outscale_keypair.nomad.keypair_name
   image_id     = data.outscale_image.consul-server.id
   vm_type      = var.vm_type
   security_group_ids = [outscale_security_group.ssh.id,
+    outscale_security_group.default.id,
   outscale_security_group.consul_server.id]
   subnet_id = outscale_subnet.bastion.subnet_id
   user_data = data.cloudinit_config.nomad_server.rendered
-  
+
   tags {
     key   = "name"
     value = "consul-server-${count.index + 2}"
   }
 }
 
-output "ssh_bastion" {
-  value = "${outscale_public_ip.public.public_ip}"
-}
 
-output "consul" {
-  value = "${outscale_public_ip.consul.public_ip}"
-}

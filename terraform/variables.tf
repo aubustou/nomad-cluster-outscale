@@ -1,3 +1,4 @@
+variable "account_id" {}
 variable "access_key_id" {}
 variable "secret_key_id" {}
 variable "region" {
@@ -10,3 +11,5 @@ variable "ssh_privkey_filename" {
 }
 
 variable "vm_type" {}
+variable "client_vm_type" {}
+variable "lb_vm_type" {}

@@ -1,3 +1,4 @@
+# SSH
 resource "outscale_security_group" "ssh" {
   description         = "ssh"
   security_group_name = "nomad-ssh"
@@ -139,4 +140,104 @@ resource "outscale_security_group_rule" "dns" {
 
   ip_protocol = "tcp"
   ip_range    = "0.0.0.0/0"
+}
+
+resource "outscale_security_group" "client_lb" {
+  description         = "client-lb"
+  security_group_name = "client-lb"
+  net_id              = outscale_net.nomad.net_id
+}
+resource "outscale_security_group_rule" "http" {
+  flow              = "Inbound"
+  security_group_id = outscale_security_group.client_lb.id
+
+  from_port_range = "80"
+  to_port_range   = "80"
+
+  ip_protocol = "tcp"
+  ip_range    = "0.0.0.0/0"
+}
+resource "outscale_security_group_rule" "client_haproxy_stats" {
+  flow              = "Inbound"
+  security_group_id = outscale_security_group.client_lb.id
+
+  from_port_range = "1936"
+  to_port_range   = "1936"
+
+  ip_protocol = "tcp"
+  ip_range    = "0.0.0.0/0"
+}
+resource "outscale_security_group_rule" "fabio_stats" {
+  flow              = "Inbound"
+  security_group_id = outscale_security_group.client_lb.id
+
+  # Fabio stats
+  from_port_range = "9998"
+  to_port_range   = "9998"
+
+  ip_protocol = "tcp"
+  ip_range    = "0.0.0.0/0"
+}
+resource "outscale_security_group_rule" "faas_monitoring" {
+  flow              = "Inbound"
+  security_group_id = outscale_security_group.client_lb.id
+
+  from_port_range = "3000"
+  to_port_range   = "3000"
+
+  ip_protocol = "tcp"
+  ip_range    = "0.0.0.0/0"
+}
+
+resource "outscale_security_group" "admin_lb" {
+  description         = "lb"
+  security_group_name = "nomad-lb"
+  net_id              = outscale_net.nomad.net_id
+}
+
+resource "outscale_security_group_rule" "consul" {
+  flow              = "Inbound"
+  security_group_id = outscale_security_group.admin_lb.id
+  from_port_range   = "8500"
+  to_port_range     = "8500"
+
+  ip_protocol = "tcp"
+  ip_range    = "0.0.0.0/0"
+}
+resource "outscale_security_group_rule" "nomad" {
+  flow              = "Inbound"
+  security_group_id = outscale_security_group.admin_lb.id
+  # Nomad
+  from_port_range = "4646"
+  to_port_range   = "4646"
+
+  ip_protocol = "tcp"
+  ip_range    = "0.0.0.0/0"
+}
+resource "outscale_security_group_rule" "haproxy_stats" {
+  flow              = "Inbound"
+  security_group_id = outscale_security_group.admin_lb.id
+  from_port_range   = "1936"
+  to_port_range     = "1936"
+
+  ip_protocol = "tcp"
+  ip_range    = "0.0.0.0/0"
+}
+
+resource "outscale_security_group" "default" {
+  description         = "default-sg"
+  security_group_name = "default-sg"
+  net_id              = outscale_net.nomad.net_id
+}
+
+resource "outscale_security_group_rule" "default_inbound" {
+  flow              = "Inbound"
+  security_group_id = outscale_security_group.default.id
+  rules {
+    ip_protocol = "-1"
+    security_groups_members {
+      account_id        = var.account_id
+      security_group_id = outscale_security_group.default.id
+    }
+  }
 }

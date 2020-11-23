@@ -1,5 +1,5 @@
 resource "outscale_internet_service" "nomad" {
-depends_on = [outscale_net.nomad]
+  depends_on = [outscale_net.nomad]
 }
 
 resource "outscale_net" "nomad" {
@@ -36,7 +36,7 @@ resource "outscale_subnet" "adm" {
 }
 
 resource "outscale_nat_service" "adm" {
-  depends_on = [outscale_internet_service.nomad]
+  depends_on   = [outscale_internet_service.nomad]
   subnet_id    = outscale_subnet.bastion.subnet_id
   public_ip_id = outscale_public_ip.nat.public_ip_id
 }

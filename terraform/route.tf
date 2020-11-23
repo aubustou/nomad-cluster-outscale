@@ -19,7 +19,7 @@ resource "outscale_route_table" "nat" {
 
 resource "outscale_route" "nat_internet" {
   destination_ip_range = "0.0.0.0/0"
-  nat_service_id = outscale_nat_service.adm.nat_service_id
+  nat_service_id       = outscale_nat_service.adm.nat_service_id
   route_table_id       = outscale_route_table.nat.route_table_id
 }
 

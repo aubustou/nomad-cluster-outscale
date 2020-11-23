@@ -1,18 +1,18 @@
 resource "outscale_public_ip" "public" {
 }
 
-resource "outscale_public_ip_link" "nomad_server" {
-  vm_id     = outscale_vm.nomad_server_1.vm_id
+resource "outscale_public_ip_link" "client_lb" {
+  vm_id     = outscale_vm.client_lb.vm_id
   public_ip = outscale_public_ip.public.public_ip
 }
 
-resource "outscale_public_ip" "consul" {
-}
-
-resource "outscale_public_ip_link" "consul_server" {
-  vm_id     = outscale_vm.consul_server_1.vm_id
-  public_ip = outscale_public_ip.consul.public_ip
-}
-
 resource "outscale_public_ip" "nat" {
+}
+
+resource "outscale_public_ip" "admin_lb" {
+}
+
+resource "outscale_public_ip_link" "admin_lb" {
+  vm_id     = outscale_vm.admin_lb.vm_id
+  public_ip = outscale_public_ip.admin_lb.public_ip
 }
