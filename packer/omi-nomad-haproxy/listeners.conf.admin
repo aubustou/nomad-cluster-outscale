@@ -1,0 +1,8 @@
+listen nomad_front
+   bind *:4646
+   balance roundrobin
+   server-template nomad 1 nomad._tcp.service.consul resolvers consul resolve-opts allow-dup-ip resolve-prefer ipv4 check
+
+listen consul_front
+   bind *:8500
+   server consul CONSUL_SERVER:8500

@@ -1,0 +1,9 @@
+[Unit]
+Description=Watch for changes on /etc/haproxy and restart Haproxy
+After=haproxy.service
+
+[Service]
+ExecStart=/usr/local/bin/inotifywait_haproxy.sh
+
+[Install]
+WantedBy=multi-user.target

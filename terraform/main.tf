@@ -91,5 +91,3 @@ resource "outscale_vm" "consul_server" {
     value = "consul-server-${count.index + 2}"
   }
 }
-
-

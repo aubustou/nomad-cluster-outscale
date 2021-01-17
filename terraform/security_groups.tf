@@ -190,8 +190,8 @@ resource "outscale_security_group_rule" "faas_monitoring" {
 }
 
 resource "outscale_security_group" "admin_lb" {
-  description         = "lb"
-  security_group_name = "nomad-lb"
+  description         = "admin_lb"
+  security_group_name = "nomad-admin_lb"
   net_id              = outscale_net.nomad.net_id
 }
 

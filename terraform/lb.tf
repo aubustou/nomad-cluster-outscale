@@ -7,11 +7,11 @@ resource "outscale_vm" "admin_lb" {
     outscale_security_group.default.id,
   outscale_security_group.admin_lb.id]
   subnet_id = outscale_subnet.bastion.subnet_id
-  user_data = data.cloudinit_config.haproxy.rendered
+  user_data = data.cloudinit_config.haproxy-admin.rendered
 
   tags {
     key   = "name"
-    value = "haproxy"
+    value = "nomad-admin-haproxy"
   }
   depends_on = [outscale_vm.consul_server_1]
 }
@@ -29,7 +29,7 @@ resource "outscale_vm" "client_lb" {
 
   tags {
     key   = "name"
-    value = "client-haproxy"
+    value = "nomad-client-haproxy"
   }
   depends_on = [outscale_vm.consul_server_1]
 }
